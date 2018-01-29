@@ -8,9 +8,12 @@ class crossword_solveur:
 
     def __init__(self, grid_file, dico):
         self.dico = self.init_words(dico)
-        self.cell = self.init_grid(grid_file)[0]
-        self.H_segment = self.init_grid(grid_file)[1]
-        self.V_segment = self.init_grid(grid_file)[2]
+        grid = self.init_grid(grid_file)
+        self.cell = grid[0]
+        self.H_segment = grid[1]
+        self.V_segment = grid[2]
+        self.n = grid[3]
+        self.m = grid[4]
         self.var = self.init_domain()
         self.solver = constraint_programming(self.var)
         self.intersection(self.H_segment, self.V_segment, self.var)
@@ -51,7 +54,7 @@ class crossword_solveur:
                     else: 
                         buff = []
 
-        return grid, H_segment, V_segment
+        return grid, H_segment, V_segment, n, m
 
     def init_domain(self):
         var = {}
@@ -126,6 +129,24 @@ class crossword_solveur:
     def solve(self):
         return self.solver.solve()
 
+    def display_solution(self):
+        solution = self.solve()
+        sol = []
+        for k in range(self.n):
+            sol.append(['#']*self.m)
+        for sequence in solution:
+            if sequence[0] == 'H':
+                positions = self.H_segment[sequence]
+            else:
+                positions = self.V_segment[sequence]
+            for i in range(len(positions)):
+                sol[positions[i][0]][positions[i][1]] = solution[sequence][i]
+        for ligne in sol:
+            content = ""
+            for col in ligne:
+                content += col
+            print(content)
+
 
     def __repr__(self):
         return "Mot-croisé avec {} mots à trouver.".format(len(self.var))
@@ -133,6 +154,9 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword3.txt", "words2.txt")
-    print(c.solve())
+    t1 = time.time()
+    c = crossword_solveur("crossword1.txt", "words1.txt")
+    c.display_solution()
+    t2 = time.time()
+    print(t2-t1)
 
