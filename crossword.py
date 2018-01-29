@@ -44,7 +44,16 @@ class crossword_solveur:
             # autre idée: trier par longueur de mots / segment
 
     def init_words(self, dico):
-        dico = open(dico, 'r').read().lower().split("\n")
+        liste_mots = open(dico, 'r').read().lower().split("\n")
+        dico = {}
+        for mot in liste_mots:
+            n = len(mot)
+            if n > 1:
+            # les mots de longueur inférieure à 1 ne sont pas valables dans les mots-croissés.
+                try:
+                    dico[n].append(mot)
+                except :
+                    dico[n] = [mot]
         return dico
 
     # def solve(self):
@@ -57,5 +66,6 @@ class crossword_solveur:
 
 if __name__ == "__main__":
     c = crossword_solveur("crossword1.txt", "words1.txt")
+    print(c.dico)
     pprint(c.segment)
 
