@@ -13,7 +13,7 @@ class crossword_solveur:
         self.var = self.init_domain()
         self.solver = constraint_programming(self.var)
         self.intersection(self.H_segment, self.V_segment, self.var)
-        self.solver.solve()
+
 
     def init_grid(self, grid_file):
         
@@ -60,7 +60,7 @@ class crossword_solveur:
         for key, value in self.V_segment.items():
             var[key] = set(self.dico[len(value)])
 
-            return var
+        return var
             # parser dico de mots
             # lire ligne 1 pour connaitre largeur
             # lire nb total ligne pour connaitre la hauteur
@@ -92,19 +92,19 @@ class crossword_solveur:
         return set(rel)
 
     def intersection(self, horizontal, vertical, var):
-        for horizontal_section in horizontal:
+        for h_key, h_positions in horizontal.items():
             # pour chaque section horizontale ....
-            h_positions = horizontal[horizontal_section]
-            for vertical_section in vertical:
+            for v_key, v_positions in vertical.items():
                 # ... on regarde si une section verticale l'intersecte
-                v_positions = vertical[vertical_section]
                 for i in range(len(h_positions)):
                     for j in range(len(v_positions)):
-                        # peut être améliorer
+                        # peut être amélioré
                         if h_positions[i] == v_positions[j]:
-                            rel = self.relation(i,j, var[horizontal_section], var[vertical_section])
-                            self.solver.addConstraint(horizontal_section, vertical_section, rel)
+                            rel = self.relation(i, j, var[h_key], var[v_key])
+                            self.solver.addConstraint(h_key, v_key, rel)
 
+    def solve(self):
+        return self.solver.solve()
 
 
     def __repr__(self):
@@ -113,6 +113,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword1.txt", "words1.txt")
-    print(c.solver)
+    c = crossword_solveur("crossword2.txt", "words2.txt")
+    print(c.var)
 

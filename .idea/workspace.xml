@@ -13,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="crossword.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="crossword.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/crossword.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="116" column="18" lean-forward="false" selection-start-line="116" selection-start-column="18" selection-end-line="116" selection-end-column="18" />
+            <state relative-caret-position="136">
+              <caret line="105" column="20" lean-forward="true" selection-start-line="105" selection-start-column="20" selection-end-line="105" selection-end-column="20" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
               </folding>
@@ -25,10 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="constraint_programming.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="constraint_programming.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/constraint_programming.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-382">
+            <state relative-caret-position="1473">
               <caret line="108" column="35" lean-forward="false" selection-start-line="108" selection-start-column="27" selection-end-line="108" selection-end-column="35" />
               <folding />
             </state>
@@ -40,6 +40,9 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>conflict</find>
+      <find>'H2</find>
+      <find>'H3</find>
+      <find>'V1</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -52,7 +55,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="y" value="23" />
     <option name="width" value="1280" />
     <option name="height" value="712" />
@@ -140,7 +143,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -171,21 +174,21 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/crossword.py">
+    <entry file="file://$PROJECT_DIR$/constraint_programming.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="116" column="18" lean-forward="false" selection-start-line="116" selection-start-column="18" selection-end-line="116" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1473">
+          <caret line="108" column="35" lean-forward="false" selection-start-line="108" selection-start-column="27" selection-end-line="108" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/constraint_programming.py">
+    <entry file="file://$PROJECT_DIR$/crossword.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-382">
-          <caret line="108" column="35" lean-forward="false" selection-start-line="108" selection-start-column="27" selection-end-line="108" selection-end-column="35" />
-          <folding />
+        <state relative-caret-position="136">
+          <caret line="105" column="20" lean-forward="true" selection-start-line="105" selection-start-column="20" selection-end-line="105" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
