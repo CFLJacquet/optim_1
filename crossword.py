@@ -77,10 +77,27 @@ class crossword_solveur:
 
     def relation(self, i, j, liste_mot_h, liste_mot_v):
         rel = []
+        dic_h = {}
         for mot_h in liste_mot_h:
-            for mot_v in liste_mot_v:
-                if mot_h[i] == mot_v[j]:
-                    rel.append((mot_h, mot_v))
+            lettreh = mot_h[i]
+            try :
+                dic_h[lettreh].append(mot_h)
+            except:
+                dic_h[lettreh] = [mot_h]
+        dic_v = {}
+        for mot_v in liste_mot_v:
+            lettrev = mot_v[j]
+            try:
+                dic_v[lettrev].append(mot_v)
+            except:
+                dic_v[lettrev] = [mot_v]
+        for lettre in dic_h:
+            try :
+                for m_v in dic_v[lettre]:
+                    for m_h in dic_h[lettre]:
+                        rel.append((m_h, m_v))
+            except:
+                pass
         return set(rel)
 
     def intersection(self, horizontal, vertical, var):
