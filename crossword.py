@@ -105,18 +105,19 @@ class crossword_solveur:
             print(h_key)
             nb_cross = 0
             # pour chaque section horizontale ....
-            for v_key, v_positions in vertical.items():
-                # ... on regarde si une section verticale l'intersecte
-                #if h_positions[0][0] < v_positions[0][0]
-                
-                for i in range(len(h_positions)):
-                    for j in range(len(v_positions)):
-                        # peut être amélioré
-                        if h_positions[i] == v_positions[j]:
-                            rel = self.relation(i, j, var[h_key], var[v_key])
-                            self.solver.addConstraint(h_key, v_key, rel)
-                            j = len(v_positions)-1
-                            i = len(h_positions)-1
+            while nb_cross < len(h_positions):
+                for v_key, v_positions in vertical.items():
+                    # ... on regarde si une section verticale l'intersecte
+                    
+                    for i in range(len(h_positions)):
+                        for j in range(len(v_positions)):
+                            # peut être amélioré
+                            if h_positions[i] == v_positions[j]:
+                                rel = self.relation(i, j, var[h_key], var[v_key])
+                                self.solver.addConstraint(h_key, v_key, rel)
+                                j = len(v_positions)-1
+                                i = len(h_positions)-1
+                                nb_cross += 1
                         
     def solve(self):
         return self.solver.solve()
@@ -128,6 +129,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword1.txt", "words1.txt")
+    c = crossword_solveur("crossword1.txt", "words2.txt")
     print(c.solve())
 
