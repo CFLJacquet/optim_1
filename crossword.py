@@ -1,4 +1,5 @@
 from constraint_programming import constraint_programming
+import time
 from pprint import pprint
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
@@ -76,6 +77,7 @@ class crossword_solveur:
         return dico
 
     def relation(self, i, j, liste_mot_h, liste_mot_v):
+        t1 = time.time()
         rel = []
         dic_h = {}
         for mot_h in liste_mot_h:
@@ -98,6 +100,8 @@ class crossword_solveur:
                         rel.append((m_h, m_v))
             except:
                 pass
+        t2 = time.time()
+        print(t2-t1)
         return set(rel)
 
     def intersection(self, horizontal, vertical, var):
@@ -129,6 +133,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword1.txt", "words2.txt")
+    c = crossword_solveur("crossword3.txt", "words2.txt")
     print(c.solve())
 
