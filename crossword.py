@@ -17,8 +17,8 @@ class crossword_solveur:
         n = len(row)
         m = len(row[0])
         
-        row_seg = []
-        col_seg = []
+        row_seg = {}
+        col_seg = {}
 
         for i, line in enumerate(row): 
             buff = []
@@ -28,7 +28,7 @@ class crossword_solveur:
                     buff.append((i,j))
                 else:
                     if buff and len(buff) > 1:
-                        row_seg.append(buff)
+                        row_seg["H"+str(len(row_seg)+1)] = buff
                         buff = []
                     else: 
                         buff = []
@@ -40,14 +40,14 @@ class crossword_solveur:
                     buff.append((i,j))
                 else:
                     if buff and len(buff) > 1:
-                        col_seg.append(buff)
+                        col_seg["V"+str(len(col_seg)+1)] = buff
                         buff = []
                     else: 
                         buff = []
         
-        
+        row_seg.update(col_seg)
 
-        return grid, row_seg + col_seg 
+        return grid, row_seg
             # parser dico de mots
             # lire ligne 1 pour connaitre largeur
             # lire nb total ligne pour connaitre la hauteur
@@ -74,16 +74,11 @@ class crossword_solveur:
     #     P = constraint_programming(self.grid)
     #     P.addConstraint(x)
 
-    # def __repr__(self):
-    #     return "{} \n\n {}".format(str(self.grid), len(self.dico))
+    def __repr__(self):
+        return "Mot-croisé avec {} mots à trouver.".format(len(self.segment))
 
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     c = crossword_solveur("crossword2.txt", "words1.txt")
-=======
-    c = crossword_solveur("crossword1.txt", "words1.txt")
-    print(c.dico)
->>>>>>> eed50eefd51fbc41eb419a281d0138e353418dba
-    pprint(c.segment)
+    pprint(c)
 
