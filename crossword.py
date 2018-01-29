@@ -61,14 +61,6 @@ class crossword_solveur:
             var[key] = set(self.dico[len(value)])
 
         return var
-            # parser dico de mots
-            # lire ligne 1 pour connaitre largeur
-            # lire nb total ligne pour connaitre la hauteur
-            # pour chaque case qui est un point, retenir les coordonnées 
-            # leur donner a chacune un alphabet de possibilité
-            # créer pgrm contrainte qui dit que toutes les cases en hauteur et en longueur doivent faire partie du dico de mots
-
-            # autre idée: trier par longueur de mots / segment
 
     def init_words(self, dico):
         liste_mots = open(dico, 'r').read().lower().split("\n")
@@ -93,16 +85,22 @@ class crossword_solveur:
 
     def intersection(self, horizontal, vertical, var):
         for h_key, h_positions in horizontal.items():
+            print(h_key)
+            nb_cross = 0
             # pour chaque section horizontale ....
             for v_key, v_positions in vertical.items():
                 # ... on regarde si une section verticale l'intersecte
+                #if h_positions[0][0] < v_positions[0][0]
+                
                 for i in range(len(h_positions)):
                     for j in range(len(v_positions)):
                         # peut être amélioré
                         if h_positions[i] == v_positions[j]:
                             rel = self.relation(i, j, var[h_key], var[v_key])
                             self.solver.addConstraint(h_key, v_key, rel)
-
+                            j = len(v_positions)-1
+                            i = len(h_positions)-1
+                        
     def solve(self):
         return self.solver.solve()
 
@@ -113,6 +111,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword2.txt", "words2.txt")
-    print(c.var)
+    c = crossword_solveur("crossword1.txt", "words1.txt")
+    print(c.solve())
 
