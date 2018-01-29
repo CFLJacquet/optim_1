@@ -18,7 +18,7 @@ class crossword_solveur:
         m = len(row[0])
         
         row_seg = []
-        col_seg = {}
+        col_seg = []
 
         for i, line in enumerate(row): 
             buff = []
@@ -30,10 +30,24 @@ class crossword_solveur:
                     if buff and len(buff) > 1:
                         row_seg.append(buff)
                         buff = []
+                    else: 
+                        buff = []
+        
+        for j in range(m):
+            for i, line in enumerate(row):
+                if line[j] == ".":
+                    grid[(i,j)] = ALPHABET
+                    buff.append((i,j))
+                else:
+                    if buff and len(buff) > 1:
+                        col_seg.append(buff)
+                        buff = []
+                    else: 
+                        buff = []
         
         
 
-        return grid, row_seg
+        return grid, row_seg + col_seg 
             # parser dico de mots
             # lire ligne 1 pour connaitre largeur
             # lire nb total ligne pour connaitre la hauteur
@@ -56,6 +70,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword1.txt", "words1.txt")
+    c = crossword_solveur("crossword2.txt", "words1.txt")
     pprint(c.segment)
 
