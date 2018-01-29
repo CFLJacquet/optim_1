@@ -11,6 +11,9 @@ class crossword_solveur:
         self.H_segment = self.init_grid(grid_file)[1]
         self.V_segment = self.init_grid(grid_file)[2]
         self.var = self.init_domain()
+        self.solver = constraint_programming(self.var)
+        self.intersection(self.H_segment, self.V_segment, self.var)
+        self.solver.solve()
 
     def init_grid(self, grid_file):
         
@@ -52,10 +55,10 @@ class crossword_solveur:
     def init_domain(self):
         var = {}
         for key, value in self.H_segment.items():
-            var[key] = self.dico[len(value)]
+            var[key] = set(self.dico[len(value)])
         
         for key, value in self.V_segment.items():
-            var[key] = self.dico[len(value)]
+            var[key] = set(self.dico[len(value)])
 
             return var
             # parser dico de mots
@@ -85,30 +88,24 @@ class crossword_solveur:
         for mot_h in liste_mot_h:
             for mot_v in liste_mot_v:
                 if mot_h[i] == mot_v[j]:
-                    rel.append(mot_h, mot_v)
-        return rel
+                    rel.append((mot_h, mot_v))
+        return set(rel)
 
     def intersection(self, horizontal, vertical, var):
-        contrainte = []
-        #peut être ajouté directement à l'instance constraint_programming
         for horizontal_section in horizontal:
             # pour chaque section horizontale ....
             h_positions = horizontal[horizontal_section]
             for vertical_section in vertical:
                 # ... on regarde si une section verticale l'intersecte
-                v_positions = vertical[horizontal_section]
+                v_positions = vertical[vertical_section]
                 for i in range(len(h_positions)):
                     for j in range(len(v_positions)):
                         # peut être améliorer
                         if h_positions[i] == v_positions[j]:
                             rel = self.relation(i,j, var[horizontal_section], var[vertical_section])
-                            contrainte.append((horizontal_section, vertical_section, rel))
-        return contrainte
+                            self.solver.addConstraint(horizontal_section, vertical_section, rel)
 
 
-    def solve(self):
-        P = constraint_programming(self.segment)
-        P.addConstraint(x)
 
     def __repr__(self):
         return "Mot-croisé avec {} mots à trouver.".format(len(self.var))
@@ -117,5 +114,5 @@ class crossword_solveur:
 
 if __name__ == "__main__":
     c = crossword_solveur("crossword1.txt", "words1.txt")
-    print(c.H_segment, c.V_segment, c)
+    print(c.solver)
 
