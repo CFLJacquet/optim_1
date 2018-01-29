@@ -63,9 +63,36 @@ class crossword_solveur:
     # def __repr__(self):
     #     return "{} \n\n {}".format(str(self.grid), len(self.dico))
 
+    def relation(self, i, j, liste_mot_h, liste_mot_v):
+        rel = []
+        for mot_h in liste_mot_h:
+            for mot_v in liste_mot_v:
+                if mot_h[i] == mot_v[j]:
+                    rel.append(mot_h, mot_v)
+        return rel
+
+    def intersection(self, horizontal, vertical, var):
+        contrainte = []
+        #peut être ajouté directement à l'instance constraint_programming
+        for horizontal_section in horizontal:
+            # pour chaque section horizontale ....
+            h_positions = horizontal[horizontal_section]
+            for vertical_section in vertical:
+                # ... on regarde si une section verticale l'intersecte
+                v_positions = vertical[horizontal_section]
+                for i in range(len(h_positions)):
+                    for j in range(len(v_positions)):
+                        # peut être améliorer
+                        if h_positions[i] == v_positions[j]:
+                            rel = self.relation(i,j, var[horizontal_section], var[vertical_section])
+                            contrainte.append((horizontal_section, vertical_section, rel))
+        return contrainte
+
+
+
+
 
 if __name__ == "__main__":
     c = crossword_solveur("crossword1.txt", "words1.txt")
-    print(c.dico)
     pprint(c.segment)
 
