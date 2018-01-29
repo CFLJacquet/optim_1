@@ -6,9 +6,11 @@ ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 class crossword_solveur:
 
     def __init__(self, grid_file, dico):
-        self.cell = self.init_grid(grid_file)[0]
-        self.segment = self.init_grid(grid_file)[1]
         self.dico = self.init_words(dico)
+        self.cell = self.init_grid(grid_file)[0]
+        self.H_segment = self.init_grid(grid_file)[1]
+        self.V_segment = self.init_grid(grid_file)[2]
+        self.var = self.init_domain()
 
     def init_grid(self, grid_file):
         
@@ -17,8 +19,8 @@ class crossword_solveur:
         n = len(row)
         m = len(row[0])
         
-        row_seg = []
-        col_seg = {}
+        H_segment = {}
+        V_segment = {}
 
         for i, line in enumerate(row): 
             buff = []
@@ -28,12 +30,34 @@ class crossword_solveur:
                     buff.append((i,j))
                 else:
                     if buff and len(buff) > 1:
-                        row_seg.append(buff)
+                        H_segment["H"+str(len(H_segment)+1)] = buff
+                        buff = []
+                    else: 
                         buff = []
         
-        
+        for j in range(m):
+            for i, line in enumerate(row):
+                if line[j] == ".":
+                    grid[(i,j)] = ALPHABET
+                    buff.append((i,j))
+                else:
+                    if buff and len(buff) > 1:
+                        V_segment["V"+str(len(V_segment)+1)] = buff
+                        buff = []
+                    else: 
+                        buff = []
 
-        return grid, row_seg
+        return grid, H_segment, V_segment
+
+    def init_domain(self):
+        var = {}
+        for key, value in self.H_segment.items():
+            var[key] = self.dico[len(value)]
+        
+        for key, value in self.V_segment.items():
+            var[key] = self.dico[len(value)]
+
+            return var
             # parser dico de mots
             # lire ligne 1 pour connaitre largeur
             # lire nb total ligne pour connaitre la hauteur
@@ -55,13 +79,6 @@ class crossword_solveur:
                 except :
                     dico[n] = [mot]
         return dico
-
-    # def solve(self):
-    #     P = constraint_programming(self.grid)
-    #     P.addConstraint(x)
-
-    # def __repr__(self):
-    #     return "{} \n\n {}".format(str(self.grid), len(self.dico))
 
     def relation(self, i, j, liste_mot_h, liste_mot_v):
         rel = []
@@ -89,10 +106,16 @@ class crossword_solveur:
         return contrainte
 
 
+    def solve(self):
+        P = constraint_programming(self.segment)
+        P.addConstraint(x)
+
+    def __repr__(self):
+        return "Mot-croisé avec {} mots à trouver.".format(len(self.var))
 
 
 
 if __name__ == "__main__":
     c = crossword_solveur("crossword1.txt", "words1.txt")
-    pprint(c.segment)
+    print(c.H_segment, c.V_segment, c)
 
