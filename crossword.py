@@ -16,7 +16,7 @@ class crossword_solveur:
         self.m = grid[4]
         self.var = self.init_domain()
         self.solver = constraint_programming(self.var)
-        self.solver.maintain_arc_consistency()
+        #self.solver.maintain_arc_consistency()
         self.intersection(self.H_segment, self.V_segment, self.var)
 
 
@@ -68,6 +68,14 @@ class crossword_solveur:
         return var
 
     def init_words(self, dico):
+        """
+        Cette fonction prend un fichier contenant l'ensemble des mots qui peuvent être utilisés pour compléter
+        le mot croissé. Cet ensemble en mis dans un dictionnaire ayant pour clés les tailles possibles de mots et
+        comme valeurs associées la liste des mots de cette taille. Ce dictionnaire permet de definir le
+        domaine de chaque variable.
+        :param dico: fichier de mots
+        :return: dictionnaire par taille
+        """
         liste_mots = open(dico, 'r').read().lower().split("\n")
         dico = {}
         for mot in liste_mots:
@@ -81,6 +89,15 @@ class crossword_solveur:
         return dico
 
     def relation(self, i, j, liste_mot_h, liste_mot_v):
+        """
+        A partir des points d'intersection de deux variables et de leur domaine, on détermne l'ensemble des couples
+        possibles de mots pour ces deux variables. Cette relation sera ajoutée aux contraintes pour le solveur.
+        :param i: point d'intersection dans le mot horizontal
+        :param j: point d'intersection dans le mot vertical
+        :param liste_mot_h: liste des mots possibles pour la variable horizontale
+        :param liste_mot_v: liste des mots possibles pour la variable verticale
+        :return: set des couples possibles de mots
+        """
         t1 = time.time()
         rel = []
         dic_h = {}
@@ -102,6 +119,14 @@ class crossword_solveur:
         return set(rel)
 
     def intersection(self, horizontal, vertical, var):
+        """
+        calcule tous les intersections entre les variables et fait appel à la fonction relation pour construire
+        les relations. Elles sont ajoutée aux contraintes du solveur.
+        :param horizontal: dictionnaire des varibles horizontales avec leur position
+        :param vertical: dictionnaire des varibles horizontales avec leur position
+        :param var: dictionnaire des varibles avec leur domaine
+        :return:
+        """
         for h_key, h_positions in horizontal.items():
             print(h_key)
             # pour chaque section horizontale ....
@@ -117,9 +142,18 @@ class crossword_solveur:
 
                         
     def solve(self):
+        """
+        appel de la fonction solve du solveur pour avoir une solution possible du mot croisé
+        :return: une solution possible sous form de dictionnaire avec comme valeur un mot pour chaque variable
+        """
         return self.solver.solve()
 
     def display_solution(self):
+        """
+        fait appel à la fonction solve du solveur. A partir de la solution trouvée, recoustruit le grille pour
+        avoir la solution visuellement.
+        :return:
+        """
         solution = self.solve()
         sol = []
         for k in range(self.n):
