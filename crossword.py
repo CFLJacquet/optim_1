@@ -16,6 +16,7 @@ class crossword_solveur:
         self.m = grid[4]
         self.var = self.init_domain()
         self.solver = constraint_programming(self.var)
+        self.solver.maintain_arc_consistency()
         self.intersection(self.H_segment, self.V_segment, self.var)
 
 
@@ -89,18 +90,11 @@ class crossword_solveur:
                 dic_h[lettreh].append(mot_h)
             except:
                 dic_h[lettreh] = [mot_h]
-        dic_v = {}
         for mot_v in liste_mot_v:
             lettrev = mot_v[j]
             try:
-                dic_v[lettrev].append(mot_v)
-            except:
-                dic_v[lettrev] = [mot_v]
-        for lettre in dic_h:
-            try :
-                for m_v in dic_v[lettre]:
-                    for m_h in dic_h[lettre]:
-                        rel.append((m_h, m_v))
+                for m in liste_mot_h[lettrev]:
+                    rel.append((m, mot_v))
             except:
                 pass
         t2 = time.time()
@@ -110,21 +104,17 @@ class crossword_solveur:
     def intersection(self, horizontal, vertical, var):
         for h_key, h_positions in horizontal.items():
             print(h_key)
-            nb_cross = 0
             # pour chaque section horizontale ....
-            while nb_cross < len(h_positions):
-                for v_key, v_positions in vertical.items():
-                    # ... on regarde si une section verticale l'intersecte
-                    
-                    for i in range(len(h_positions)):
-                        for j in range(len(v_positions)):
-                            # peut être amélioré
-                            if h_positions[i] == v_positions[j]:
-                                rel = self.relation(i, j, var[h_key], var[v_key])
-                                self.solver.addConstraint(h_key, v_key, rel)
-                                j = len(v_positions)-1
-                                i = len(h_positions)-1
-                                nb_cross += 1
+            for v_key, v_positions in vertical.items():
+                # ... on regarde si une section verticale l'intersecte
+                for i in range(len(h_positions)):
+                    for j in range(len(v_positions)):
+                        if h_positions[i] == v_positions[j]:
+                            rel = self.relation(i, j, var[h_key], var[v_key])
+                            self.solver.addConstraint(h_key, v_key, rel)
+                            j = len(v_positions)-1
+                            i = len(h_positions)-1
+
                         
     def solve(self):
         return self.solver.solve()
@@ -155,7 +145,7 @@ class crossword_solveur:
 
 if __name__ == "__main__":
     t1 = time.time()
-    c = crossword_solveur("crossword1.txt", "words1.txt")
+    c = crossword_solveur("crossword2.txt", "words2.txt")
     c.display_solution()
     t2 = time.time()
     print(t2-t1)
