@@ -8,18 +8,22 @@ class crossword_solveur:
     def __init__(self, grid_file, dico):
         self.dico = self.init_words(dico)
         grid = self.init_grid(grid_file)
-        self.cell = grid[0]
-        self.H_segment = grid[1]
-        self.V_segment = grid[2]
-        self.n = grid[3]
-        self.m = grid[4]
+        self.H_segment = grid[0]
+        self.V_segment = grid[1]
+        self.n = grid[2]
+        self.m = grid[3]
         self.var = self.init_domain()
         self.contraintes = self.intersection()
 
 
     def init_grid(self, grid_file):
-        
-        grid = {}
+        """
+        Cette fonction prend en entrée la grille de mots croisés à résoudre et renvoie deux dictonnaires
+        contenant les mots à trouver, plus la longueur/largeur de la grille
+        :param grid_file: grille de mots croisés
+        :return: dictionnaire des segments horizontaux, dictionnaire des segments verticaux, longueur 
+                de la grille, largeur de la grille
+        """
         row = open(grid_file, 'r').readlines()
         n = len(row)
         m = len(row[0])
@@ -50,9 +54,14 @@ class crossword_solveur:
                     else: 
                         buff = []
 
-        return grid, H_segment, V_segment, n, m
+        return H_segment, V_segment, n, m
 
     def init_domain(self):
+        """
+        Cette fonction prend chaque segment et retourne son domaine, c'est-à-dire l'ensemble des mots
+        de longueur adéquate
+        :return: dictionnaire des mots possibles pour chaque segment
+        """
         var = {}
         for key, value in self.H_segment.items():
             var[key] = set(self.dico[len(value)])
@@ -130,24 +139,26 @@ class crossword_solveur:
         return contraintes
 
                         
-    def solve(self):
+    def solve(self, maintain_arc_consistency=True):
         """
         appel de la fonction solve du solveur pour avoir une solution possible du mot croisé
+        :param maintain_arc_consistency: permet de maintenir l'arc consistency ou non
         :return: une solution possible sous forme de dictionnaire
         """
         solver = constraint_programming(self.var)
         for c in self.contraintes:
             solver.addConstraint(c[0], c[1], c[2])
-        solver.maintain_arc_consistency()
+        if maintain_arc_consistency == True:
+            solver.maintain_arc_consistency()
         return solver.solve()
 
-    def display_solution(self):
+    def display_solution(self, maintain_arc_consistency=True):
         """
         fait appel à la fonction solve du solveur. A partir de la solution trouvée, recoustruit le grille pour
         avoir la solution visuellement.
         :return:
         """
-        solution = self.solve()
+        solution = self.solve(maintain_arc_consistency)
         sol = []
         for k in range(self.n):
             sol.append(['#']*self.m)
@@ -175,7 +186,7 @@ class crossword_solveur:
 if __name__ == "__main__":
     t1 = time.time()
     c = crossword_solveur("crossword2.txt", "words2.txt")
-    c.display_solution()
+    c.display_solution(maintain_arc_consistency=False)
     t2 = time.time()
     print("\n")
     print("temps pour la résolution : " + str(t2-t1) + " s")
