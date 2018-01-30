@@ -85,13 +85,12 @@ class crossword_solveur:
 
     def relation(self, i, liste_mot):
         """
-        A partir des points d'intersection de deux variables et de leur domaine, on détermne l'ensemble des couples
-        possibles de mots pour ces deux variables. Cette relation sera ajoutée aux contraintes pour le solveur.
-        :param i: point d'intersection dans le mot horizontal
-        :param j: point d'intersection dans le mot vertical
-        :param liste_mot_h: liste des mots possibles pour la variable horizontale
-        :param liste_mot_v: liste des mots possibles pour la variable verticale
-        :return: set des couples possibles de mots
+        A partir d'un point d'intersection entre deux segments et la liste des mots pour le segment que l'on
+        souhaite contraindre, on détermne l'ensemble des couples possibles de mot pour le segment et des lettres
+        possibles sur la case d'intersection. Cette relation sera ajoutée aux contraintes pour le solveur.
+        :param i: point d'intersection dans le segment
+        :param liste_mot: liste des mots possibles pour le segment
+        :return: set des couples possibles de mot et lettre
         """
         rel = []
         for mot in liste_mot:
@@ -101,39 +100,40 @@ class crossword_solveur:
 
     def intersection(self):
         """
-        calcule tous les intersections entre les variables et fait appel à la fonction relation pour construire
-        les relations. Elles sont ajoutée aux contraintes du solveur.
-        :param horizontal: dictionnaire des varibles horizontales avec leur position
-        :param vertical: dictionnaire des varibles horizontales avec leur position
-        :param var: dictionnaire des varibles avec leur domaine
-        :return:
+        calcule tous les intersections entre les variables, ajoute les points d'intersection comme nouvelles variables
+        et fait appel à la fonction relation pour construire les relations entre les segments et ces points
+        d'intersection. Elles sont ajoutée aux contraintes du solveur par la suite.
+        :return: contraintes : la liste des contraintes déterminées par les intersections
         """
         contraintes = []
         for h_key, h_positions in self.H_segment.items():
-            print(h_key)
             # pour chaque section horizontale ....
             for v_key, v_positions in self.V_segment.items():
                 # ... on regarde si une section verticale l'intersecte
                 for i in range(len(h_positions)):
                     for j in range(len(v_positions)):
-                        if h_positions[i] == v_positions[j]:
-                            print(str(h_positions[i]))
+                        if h_positions[i] == v_positions[j]: # si c'est le cas
                             self.var[str(h_positions[i])] = set(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
                                                                  'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
                                                                  'w', 'x', 'y', 'z'])
+                            # on ajoute le point d'intersection aux variables, avec leur domaine (alphabet)
                             rel_h = self.relation(i, self.var[h_key])
+                            # on détermine les relations entre le segment horizontal et la case d'intersection
                             rel_v = self.relation(j, self.var[v_key])
+                            # on détermine les relations entre le segment vertical et la case d'intersection
                             contraintes.append((h_key, str(h_positions[i]), rel_h))
                             contraintes.append((v_key, str(h_positions[i]), rel_v))
+                            # les contraintes sont stockées dans une liste pour être ajoutée ensuite au solveur
                             j = len(v_positions)-1
                             i = len(h_positions)-1
+                            #si on a déjà trouvé une intersection entre ces deux segments, il n'y en aura plus d'autres
         return contraintes
 
                         
     def solve(self):
         """
         appel de la fonction solve du solveur pour avoir une solution possible du mot croisé
-        :return: une solution possible sous form de dictionnaire avec comme valeur un mot pour chaque variable
+        :return: une solution possible sous forme de dictionnaire
         """
         solver = constraint_programming(self.var)
         for c in self.contraintes:
@@ -177,5 +177,6 @@ if __name__ == "__main__":
     c = crossword_solveur("crossword2.txt", "words2.txt")
     c.display_solution()
     t2 = time.time()
-    print(t2-t1)
+    print("\n")
+    print("temps pour la résolution : " + str(t2-t1) + " s")
 
