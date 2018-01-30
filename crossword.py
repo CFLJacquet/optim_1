@@ -10,6 +10,7 @@ class crossword_solveur:
         self.cell = self.init_grid(grid_file)[0]
         self.H_segment = self.init_grid(grid_file)[1]
         self.V_segment = self.init_grid(grid_file)[2]
+        self.temp_cross = {}
         self.var = self.init_domain()
         self.solver = constraint_programming(self.var)
         self.intersection(self.H_segment, self.V_segment, self.var)
@@ -77,27 +78,45 @@ class crossword_solveur:
 
     def relation(self, i, j, liste_mot_h, liste_mot_v):
         rel = []
-        dic_h = {}
-        for mot_h in liste_mot_h:
-            lettreh = mot_h[i]
-            try :
-                dic_h[lettreh].append(mot_h)
-            except:
-                dic_h[lettreh] = [mot_h]
-        dic_v = {}
-        for mot_v in liste_mot_v:
-            lettrev = mot_v[j]
-            try:
-                dic_v[lettrev].append(mot_v)
-            except:
-                dic_v[lettrev] = [mot_v]
-        for lettre in dic_h:
-            try :
-                for m_v in dic_v[lettre]:
-                    for m_h in dic_h[lettre]:
-                        rel.append((m_h, m_v))
-            except:
-                pass
+
+        for lettre in ALPHABET:
+            # regarde si le couple (taille du mot, lettre, place de la lettre) n'a pas deja été défini
+            if (len(list(liste_mot_h)[0]), lettre , i) in self.temp_cross.keys():
+                h_mots = self.temp_cross[(len(list(liste_mot_h)[0]), lettre , i)]
+            else:
+                h_mots = [x for x in liste_mot_h if x[i] == lettre]
+                self.temp_cross[(len(list(liste_mot_h)[0]), lettre , i)] = h_mots
+            
+            if (len(list(liste_mot_v)[0]), lettre , j) in self.temp_cross.keys():
+                v_mots = self.temp_cross[(len(list(liste_mot_v)[0]), lettre , j)]
+            else:
+                v_mots = [x for x in liste_mot_v if x[j] == lettre]
+                self.temp_cross[(len(list(liste_mot_v)[0]), lettre , j)] = v_mots
+                
+            if v_mots and h_mots:
+                rel = rel + [ (m_h, m_v) for m_h in h_mots for m_v in v_mots ]
+
+        # for mot_h in liste_mot_h:
+        #     lettreh = mot_h[i]
+        #     try :
+        #         dic_h[lettreh].append(mot_h)
+        #     except:
+        #         dic_h[lettreh] = [mot_h]
+        # dic_v = {}
+        # for mot_v in liste_mot_v:
+        #     lettrev = mot_v[j]
+        #     try:
+        #         dic_v[lettrev].append(mot_v)
+        #     except:
+        #         dic_v[lettrev] = [mot_v]
+        # for lettre in dic_h:
+        #     try :
+        #         for m_v in dic_v[lettre]:
+        #             for m_h in dic_h[lettre]:
+        #                 rel.append((m_h, m_v))
+        #     except:
+        #         pass
+        
         return set(rel)
 
     def intersection(self, horizontal, vertical, var):
@@ -120,6 +139,7 @@ class crossword_solveur:
                                 nb_cross += 1
                         
     def solve(self):
+        print("solving crossword")
         return self.solver.solve()
 
 
@@ -129,6 +149,6 @@ class crossword_solveur:
 
 
 if __name__ == "__main__":
-    c = crossword_solveur("crossword1.txt", "words2.txt")
+    c = crossword_solveur("crossword3.txt", "words2.txt")
     print(c.solve())
 
