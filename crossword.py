@@ -93,7 +93,7 @@ class crossword_solveur:
         for mot_v in liste_mot_v:
             lettrev = mot_v[j]
             try:
-                for m in liste_mot_h[lettrev]:
+                for m in dic_h[lettrev]:
                     rel.append((m, mot_v))
             except:
                 pass
@@ -145,7 +145,7 @@ class crossword_solveur:
 
 if __name__ == "__main__":
     t1 = time.time()
-    c = crossword_solveur("crossword2.txt", "words2.txt")
+    c = crossword_solveur("crossword1.txt", "words1.txt")
     c.display_solution()
     t2 = time.time()
     print(t2-t1)
